@@ -5,6 +5,7 @@ const User = require("../models/userschema.js");
 const generateToken = require("../utils/tokens.js");
 const { Router } = require("express")
 const { getusercollection } = require("../config/db.js")
+const sendEmail = require("../utils/sendEmail.js")
 const userauth = Router()
 
 userauth.post("/registration", async function (req, res) {
@@ -20,9 +21,15 @@ userauth.post("/registration", async function (req, res) {
         const userCollection = await getusercollection();
         const existingUser = await userCollection.findOne({ email: email });
 
+
         if (existingUser) {
-            return res.status(400).json({ error: "Email already registered" });
-        }
+            return res.status(400).json({ error: "Email already registered" });}
+        
+
+       
+       
+    
+
 
 
 
@@ -30,21 +37,22 @@ userauth.post("/registration", async function (req, res) {
         const hashedPassword = await hashpassword(password);
 
 
-        const user = new User({
+        const user = await userCollection.insertOne({
             fullname: fullname,
             email: email,
             password: hashedPassword
         });
 
+        if (user.acknowledged){
+
+            res.status(201).send("User Registered Successfully");
+        }
+        else{
+            res.status(500).send("Error try again");
+        }
 
 
-        user.save()
-            .then(() => {
-                res.status(201).send("User Registered Successfully");
-            })
-            .catch(err => {
-                res.status(500).send("Error try again");
-            });
+
     }
 
     catch (error) {
