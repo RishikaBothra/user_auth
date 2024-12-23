@@ -5,8 +5,10 @@ const User = require("../models/userschema.js");
 const generateToken = require("../utils/tokens.js");
 const { Router } = require("express")
 const { getusercollection } = require("../config/db.js")
-const sendEmail = require("../utils/sendEmail.js")
+const sendEmail = require("../utils/sendEmail.js");
+const sendVerificationEmail = require("../utils/sendEmail.js");
 const userauth = Router()
+const crypto = require("crypto");
 
 userauth.post("/registration", async function (req, res) {
 
@@ -35,17 +37,22 @@ userauth.post("/registration", async function (req, res) {
 
 
         const hashedPassword = await hashpassword(password);
+        const VerificationToken = crypto.randomBytes(20).toString('hex');
 
 
         const user = await userCollection.insertOne({
             fullname: fullname,
             email: email,
-            password: hashedPassword
+            password: hashedPassword,
+            isVerified: false,
+            VerificationToken: VerificationToken
         });
 
         if (user.acknowledged){
 
-            res.status(201).send("User Registered Successfully");
+            await sendVerificationEmail(email, VerificationToken, fullname);
+
+            res.status(201).send("User Registered Successfully.Please check your email for verification link");
         }
         else{
             res.status(500).send("Error try again");
@@ -53,6 +60,13 @@ userauth.post("/registration", async function (req, res) {
 
 
 
+        user.save()
+            .then(() => {
+                res.status(201).send("User Registered Successfully");
+            })
+            .catch(err => {
+                res.status(500).send("Error try again");
+            });
     }
 
     catch (error) {
