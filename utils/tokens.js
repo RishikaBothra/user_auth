@@ -1,7 +1,8 @@
 const config = require("../config/config")
+const jwt = require("jsonwebtoken");
 
 function tokens(fullname,email) {
-    const token = config.JWT_SECRET.sign({
+    const token = jwt.sign({
         fullname: fullname,
         email: email
     },
@@ -9,7 +10,7 @@ function tokens(fullname,email) {
         expiresIn: Math.floor(Date.now() / 1000) + 15 * 24 * 60 * 60
 
     });
-    
+    return token;
 }
 
 module.exports = tokens

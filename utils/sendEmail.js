@@ -1,18 +1,18 @@
 const nodemailer = require("nodemailer");
+const config = require("../config/config.js");
 
-
-async function sendVerificationEmail(email, VerificationToken, fullname) {
+async function sendVerificationEmail(email, VerificationLink, fullname) {
     const transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port:465,
+        host: config.EMAIL_HOST,
+        port:config.EMAIL_PORT,
         secure:true,
         auth: {
-            user: "rshkbothra@gmail.com",
-            pass: "towz qrxd serj ycsk"
+            user: config.EMAIL_USER,
+            pass: config.EMAIL_PASSWORD
         }
     });
 
-    const domain =   'http://localhost:3000'
+    const domain = config.URL;
 
     const mailOptions = {
         to:email,
@@ -21,11 +21,11 @@ async function sendVerificationEmail(email, VerificationToken, fullname) {
         text:`
         Hi ${fullname},
         Please click on the link below to verify your email address.
-        ${domain}/verify/${VerificationToken}
+        ${config.URL}/auth/verify/${VerificationLink}
      if u have not requested for this email, please ignore this email.
 
      best wishes,
-     Team 10`,
+     Rishika`,
 
         html:`
         <html>
@@ -33,13 +33,15 @@ async function sendVerificationEmail(email, VerificationToken, fullname) {
         1.6;
         colour: #333333;">
         <h2>
-        welcome to team 10,
+        Welcome ,
         </h2>
         <p> Hi ${fullname},</p>
         <p>Please click on the link below to verify your email address.</p>
 
-        below:</p>
-        <a "${domain}/auth/verify/${VerificationToken}">Verify Email</a>
+        below:
+        </p>
+        <br> 
+        <a href = "${domain}/auth/verify/${VerificationLink}">Verify Email</a>
         <p>if u have not requested for this email, please ignore this email.</p>
 
         <p>best wishes,</p>
