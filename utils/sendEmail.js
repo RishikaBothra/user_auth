@@ -21,7 +21,7 @@ async function sendVerificationEmail(email, VerificationLink, fullname) {
         text:`
         Hi ${fullname},
         Please click on the link below to verify your email address.
-        ${config.URL}/auth/verify/${VerificationLink}
+        ${VerificationLink}
      if u have not requested for this email, please ignore this email.
 
      best wishes,
