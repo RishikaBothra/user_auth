@@ -60,7 +60,7 @@ userauth.post("/registration", async function (req, res) {
     }
 
     catch (error) {
-        console.error("Registration error:", error);
+        return("Registration error:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 });
@@ -88,7 +88,7 @@ userauth.post("/verify-email", async function (req, res) {
         res.status(200).send("Email verified successfully and u can log in now");}
     }
         catch (error){
-            console.error("Registration error:", error);    
+            return("Registration error:", error);    
             return res.status(500).json({ error: "Internal server error" });
 
         }
@@ -116,10 +116,10 @@ userauth.post("/reset-password", async function (req, res) {
         await sendResetPasswordEmail(email, token); 
 
         res.status(200).send("Email sent successfully");
-        console.log("Reset password token is " + token);}
+        return("Reset password token is " + token);}
 
     } catch (error) {
-        console.error("Reset password error:", error);
+        return("Reset password error:", error);
         return res.status(500).json({ error: "Internal server error" });
     }
 });
@@ -145,12 +145,12 @@ userauth.post("/login", async function (req, res) {
         if (await bcrypt.compare(password, user.password)) {
             res.status(200).send("Login Successful");
             const token = generateToken(user.fullname, user.email);
-            console.log("Token is " + token);
+            retrun("Token is " + token);
         } else {
             return res.status(400).send("Invalid Credentials");
         }
     } catch (error) {
-        console.error("Login error:", error);
+        return("Login error:", error);
         return res.status(500).send({ error: "Internal server error" });
     }
 });

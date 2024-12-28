@@ -7,7 +7,7 @@ async function hashpasswords(password){
 
     }
     catch(err){
-        console.error("Error while hashing password");
+        return("Error while hashing password");
         throw err;
     }
     

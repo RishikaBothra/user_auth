@@ -8,7 +8,7 @@ async function connectDB(){
         console.log("Database connected");
     }
     catch(err){
-        console.log(err);
+        return(err);
     }
 
 
@@ -18,8 +18,8 @@ async function getusercollection(){
             await connectDB();
             return mongoose.connection.db.collection("user");
         } catch (err) {
-            console.log(err);
-            throw err;
+            return(err);
+            
         }
 }
 
